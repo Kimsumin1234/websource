@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- action="info2.jsp" -->
+    <!-- http://localhost:8080/scope/info2.html 로 접속 -->
+    <!-- http://localhost:8080/scope/info2.jsp 로 전송 -->
+    <!-- pageContext.forward("forward.jsp"); -->
+    <!-- 화면 에 나오는 내용은 forward.jsp -->
+    <!-- info2.jsp 에서 할 수 있는 작업들을 forward.jsp 에서 할 수 있게 됨 -->
+
+    <!-- action="/scope" -->
+    <!-- 이 귀찮은 작업을 왜하냐? 나중에 info2.jsp 자리에 selvlet 파일이 들어오게 된다 -->
+    <!-- 서버단으로 DB를 불러서 servlet 파일에서 작업을 해야하기 때문에 -->
+    <form action="/scope" method="post">
+      <div>
+        <label for="id">id</label>
+        <input type="text" name="id" id="id" />
+      </div>
+
+      <div>
+        <button type="submit">전송</button>
+      </div>
+    </form>
+  </body>
+</html>
