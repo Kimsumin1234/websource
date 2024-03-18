@@ -1,7 +1,11 @@
 <%-- jsp 임 을 나타내는 식별 코드 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%-- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> --%>
-
+<%@ page import="member.MemberDTO" %>
+<%
+// 세션 scope 에 담긴 속성 사져오기
+MemberDTO loginDto = (MemberDTO)session.getAttribute("loginDto");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +26,11 @@
 자바스크립트로도 더하기 연산해서 브라우저로 보여줄수있다 - 프론트엔드
  --%>
         <div class="container">
+        <div>
+        id : <%= loginDto.getUserId()%>
+        <button type="button" id="logout">로그아웃</button>
+        </div>
+
       <form action="result1.jsp" method="post">
         <div class="mb-3">
           <input type="text" class="form-control" id="num1" placeholder="숫자1" name="num1" size="5"/>
@@ -32,5 +41,6 @@
         </div>
       </form>
     </div>
+    <script src="/js/logout.js"></script>
 </body>
 </html>

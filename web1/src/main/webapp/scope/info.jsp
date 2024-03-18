@@ -28,6 +28,7 @@ info.jsp 가 알고있는 값(사용자입력값, DB값) 을 다른 페이지랑
   - request : HttpServletRequest 유효범위 동일 (forward()와 같이 써야 의미가있다)
   - session : HttpSession 유효범위(브라우저를 닫기 전까지)
   - application : 톰캣 서버 범위
+  
   - scope 메소드 : setAttribute(), getAttribute()
   request.setAttribute("key", 값), request.getAttribute("key")
   session.setAttribute(), session.getAttribute() --%>
