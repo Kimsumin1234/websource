@@ -6,7 +6,8 @@
 TodoDto todo = (TodoDto)request.getAttribute("todo");
 %>
 <h1 class="mt-5">Todo Modify</h1>
-<form action="updatePro.jsp" method="post">
+<%-- <form action="updatePro.jsp" method="post"> --%>
+<form action="${pageContext.request.contextPath}/update" method="post">
  <div class="mb-3">
    <label for="title" class="form-label">title</label>
    <%-- <input type="text" class="form-control" id="title" placeholder="title" name="title" value="<%=todo.getTitle()%>"> --%>
@@ -34,8 +35,11 @@ TodoDto todo = (TodoDto)request.getAttribute("todo");
  </div>
  <div>
    <button class="btn btn-primary" type="submit">수정</button>
+   <%-- <a class="btn btn-danger" href="<c:url value="/view/deletePro.jsp?no=${todo.no}"/>">삭제</a> --%>
+   <a class="btn btn-danger" href="<c:url value="/delete?no=${todo.no}"/>">삭제</a>
    <%-- a 태그에 클래스명을 버튼식으로 주면 버튼 모양으로 a 태그를 만들수있다 --%>
-   <a class="btn btn-success" href="<c:url value="/view/list.jsp"/>">목록</a>
+   <%-- <a class="btn btn-success" href="<c:url value="/view/list.jsp"/>">목록</a> --%>
+   <a class="btn btn-success" href="<c:url value="/list"/>">목록</a>
  </div>
  <input type="hidden" name="no" value="${todo.no}">
 </form>

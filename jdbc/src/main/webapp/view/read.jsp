@@ -32,9 +32,11 @@ TodoDto todo = (TodoDto)request.getAttribute("todo");
    <textarea class="form-control" id="description" rows="3" name="description" readonly>${todo.description}</textarea>
  </div>
  <div>
-   <a class="btn btn-primary" href="modifyPro.jsp?no=${todo.no}">수정</a>
+   <%-- <a class="btn btn-primary" href="modifyPro.jsp?no=${todo.no}">수정</a> --%>
+   <a class="btn btn-primary" href="<c:url value="/modify?no=${todo.no}"/>">수정</a>
    <%-- a 태그에 클래스명을 버튼식으로 주면 버튼 모양으로 a 태그를 만들수있다 --%>
-   <a class="btn btn-success" href="<c:url value="/view/list.jsp"/>">목록</a>
+   <%-- <a class="btn btn-success" href="<c:url value="/view/list.jsp"/>">목록</a> --%>
+   <a class="btn btn-success" href="<c:url value="/list"/>">목록</a>
  </div>
 </form>
 <%@ include file ="../include/footer.jsp" %>

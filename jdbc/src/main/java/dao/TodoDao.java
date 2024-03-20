@@ -42,7 +42,7 @@ public class TodoDao {
 
     }
 
-    // 3. sql 작업 = CRUD 메소드 구현
+    // 3. sql 작업 = CRUD 메소드 구현 (create read update delete)
     // 1) 전체조회 - Read (전체조회는 List<> 를 사용한다)
     public List<TodoDto> getList() {
         List<TodoDto> list = new ArrayList<>();
@@ -142,6 +142,25 @@ public class TodoDao {
             pstmt.setBoolean(1, insertDto.isCompleted());
             pstmt.setString(2, insertDto.getDescription());
             pstmt.setInt(3, insertDto.getNo());
+
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(con, pstmt);
+        }
+        return result;
+    }
+
+    // 5) 삭제
+    public int delete(String no) {
+        int result = 0;
+        con = getConnection();
+        String sql = "DELETE FROM TODOTBL WHERE NO =?";
+        try {
+            pstmt = con.prepareStatement(sql);
+
+            pstmt.setInt(1, Integer.parseInt(no));
 
             result = pstmt.executeUpdate();
         } catch (SQLException e) {
