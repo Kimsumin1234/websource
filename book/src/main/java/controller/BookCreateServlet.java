@@ -36,8 +36,9 @@ public class BookCreateServlet extends HttpServlet {
         int price = Integer.parseInt(req.getParameter("price"));
         String description = req.getParameter("description");
 
-        BookDao dao = new BookDao();
         BookDto insertDto = new BookDto(code, title, writer, price, description);
+
+        BookDao dao = new BookDao();
         int result = dao.insert(insertDto);
 
         // 생성 실패시 다시 생성 창으로 돌아오게 함
