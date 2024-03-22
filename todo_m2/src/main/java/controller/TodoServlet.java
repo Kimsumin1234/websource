@@ -12,7 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import action.Action;
 import action.ActionForward;
+import action.TodoCreateAction;
+import action.TodoDeleteAction;
 import action.TodoListAction;
+import action.TodoReadAction;
+import action.TodoUpdateAction;
 import dao.TodoDao;
 import dto.TodoDto;
 import service.TodoService;
@@ -43,10 +47,6 @@ public class TodoServlet extends HttpServlet {
         // cmd = cmd.substring(contextPath.length() + 1, cmd.lastIndexOf("."));
         // System.out.println("cmd sub : " + cmd);
 
-        TodoDao dao = new TodoDao();
-        // DB 연동은 service 가 담당 (selvlet 이 db 연동 했던걸 분담)
-        TodoService service = new TodoServiceImpl();
-
         Action action = null;
 
         if (cmd.equals("/list.do")) {
@@ -55,60 +55,25 @@ public class TodoServlet extends HttpServlet {
 
         } else if (cmd.equals("/read.do")) {
 
-            String title = req.getParameter("title");
-            String no = req.getParameter("no");
+            action = new TodoReadAction("/view/read.jsp");
 
-            TodoDto todo = service.getRow(no);
-
-            req.setAttribute("todo", todo);
-
-            // 경로 메소드 사용 않할경우 각각 다 입력해야한다
-            // RequestDispatcher rd = req.getRequestDispatcher("/view/read.jsp");
-            // rd.forward(req, resp);
         } else if (cmd.equals("/modify.do")) {
 
-            String title = req.getParameter("title");
-            String no = req.getParameter("no");
+            // path 만 다르고 코드는 TodoReadAction 이랑 동일해서 이렇게 가능하다
+            action = new TodoReadAction("/view/modify.jsp");
 
-            TodoDto todo = service.getRow(no);
-
-            req.setAttribute("todo", todo);
-
-            // RequestDispatcher rd = req.getRequestDispatcher("/view/modify.jsp");
-            // rd.forward(req, resp);
         } else if (cmd.equals("/delete.do")) {
 
-            String no = req.getParameter("no");
+            action = new TodoDeleteAction("/list.do");
 
-            boolean result = service.delete(no);
-
-            // resp.sendRedirect("/list.do");
         } else if (cmd.equals("/update.do")) {
 
-            String completed = req.getParameter("completed");
-            String description = req.getParameter("description");
-            String no = req.getParameter("no");
+            action = new TodoUpdateAction("/list.do");
 
-            TodoDto updateDto = new TodoDto();
-            updateDto.setCompleted(Boolean.parseBoolean(completed));
-            updateDto.setDescription(description);
-            updateDto.setNo(Integer.parseInt(no));
-
-            boolean result = service.update(updateDto);
-
-            // resp.sendRedirect("/list.do");
         } else if (cmd.equals("/create.do")) {
 
-            String title = req.getParameter("title");
-            String description = req.getParameter("description");
+            action = new TodoCreateAction("/list.do");
 
-            TodoDto inserDto = new TodoDto();
-            inserDto.setTitle(title);
-            inserDto.setDescription(description);
-
-            boolean result = service.insert(inserDto);
-
-            // resp.sendRedirect("/list.do");
         }
 
         ActionForward af = null;
