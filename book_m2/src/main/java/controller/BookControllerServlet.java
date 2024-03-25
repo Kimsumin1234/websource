@@ -13,9 +13,14 @@ import action.Action;
 import action.ActionForward;
 import action.BookCreateAction;
 import action.BookDeleteAction;
+import action.BookLeaveAction;
 import action.BookListAction;
+import action.BookLoginAction;
+import action.BookLogoutAction;
+import action.BookPasswordAction;
 import action.BookUpdateAction;
 import action.BookReadAction;
+import action.BookRegisterAction;
 import action.BookSearchAction;
 
 @WebServlet("*.do")
@@ -50,6 +55,21 @@ public class BookControllerServlet extends HttpServlet {
         }
         if (cmd.equals("/delete.do")) {
             action = new BookDeleteAction("/list.do");
+        }
+        if (cmd.equals("/login.do")) {
+            action = new BookLoginAction("/list.do");
+        }
+        if (cmd.equals("/logout.do")) {
+            action = new BookLogoutAction("/");
+        }
+        if (cmd.equals("/change.do")) {
+            action = new BookPasswordAction("/view/login.jsp");
+        }
+        if (cmd.equals("/register.do")) {
+            action = new BookRegisterAction("/view/login.jsp");
+        }
+        if (cmd.equals("/leave.do")) {
+            action = new BookLeaveAction("/view/login.jsp");
         }
 
         // 4. 생성된 action 에게 일 시키기(서블릿(~Pro),이 해야했던 일)

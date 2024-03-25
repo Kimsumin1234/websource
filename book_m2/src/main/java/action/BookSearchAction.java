@@ -17,6 +17,7 @@ public class BookSearchAction implements Action {
 
     @Override
     public ActionForward execute(HttpServletRequest req) throws Exception {
+        // search.jsp 에서 넘긴 값 가져오기
         String criteria = req.getParameter("criteria");
         String keyword = req.getParameter("keyword");
 

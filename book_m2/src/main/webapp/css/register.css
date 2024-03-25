@@ -1,0 +1,11 @@
+input[type="text"] {
+  border: 2px solid lightslategrey;
+}
+
+input[type="password"] {
+  border: 2px solid lightslategrey;
+}
+
+input[type="email"] {
+  border: 2px solid lightslategrey;
+}
