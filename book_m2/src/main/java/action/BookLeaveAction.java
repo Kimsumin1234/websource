@@ -20,6 +20,7 @@ public class BookLeaveAction implements Action {
 
         HttpSession session = req.getSession();
         MemberDto loginDto = (MemberDto) session.getAttribute("loginDto");
+
         MemberDto leaveDto = new MemberDto();
         leaveDto.setUserid(loginDto.getUserid());
         leaveDto.setPassword(password);
@@ -28,6 +29,7 @@ public class BookLeaveAction implements Action {
         boolean result = service.leave(leaveDto);
 
         if (result) {
+            // 탈퇴 시 기존 세션 제거
             session.invalidate();
         } else {
             path = "/view/leave.jsp";

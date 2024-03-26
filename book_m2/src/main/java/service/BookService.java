@@ -21,7 +21,7 @@ public interface BookService {
 
     boolean delete(int code);
 
-    // 로그인 작업들 메소드 호출
+    // 회원관련 작업들 메소드 호출
     MemberDto login(MemberDto loginDto);
 
     boolean passwordChange(ChangeDto changeDto);
