@@ -1,6 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@include file="../include/header.jsp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@include file="/include/header.jsp"%>
 <!-- Main content -->
 <section class="content">
 	<div class="box box-primary">
@@ -13,6 +12,7 @@
 				<div class="form-group row">
 					<label for="name" class="col-sm-2 col-form-label">글쓴이</label>
 					<div class="col-sm-10">
+					    <input type="hidden" name="bno" value="${dto.bno}">
 						<input type="text" name="name" size="10" class="form-control" readonly value="${dto.name}" maxlength='10'>
 					</div>
 				</div>
@@ -31,7 +31,7 @@
 				<div class="form-group  row">
 					<label for="filename" class="col-sm-2 col-form-label">파일첨부</label>
 					<div class="col-sm-10">
-					${dto.attach}
+					  <a href="<c:url value="/view/download.jsp?fileName=${dto.attach}"/>">${dto.attach}</a>					
 					</div>
 				</div>
 				<div style="height:10px"></div>
@@ -46,5 +46,8 @@
 		</form>
 	</div>
 </section>
+<script>
+const bno = ${dto.bno};
+</script>
 <script src="<c:url value="/js/view.js"/>"></script>
-<%@include file="../include/footer.jsp"%>
+<%@include file="/include/footer.jsp"%>

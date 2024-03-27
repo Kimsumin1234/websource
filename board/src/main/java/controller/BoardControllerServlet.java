@@ -12,8 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import action.Action;
 import action.ActionForward;
+import action.BoardDeleteAction;
 import action.BoardListAction;
 import action.BoardReadAction;
+import action.BoardReplyAction;
+import action.BoardUpdateAction;
 import action.BoardWriteAction;
 
 @WebServlet("*.do")
@@ -35,6 +38,16 @@ public class BoardControllerServlet extends HttpServlet {
             action = new BoardWriteAction("/qList.do");
         } else if (cmd.equals("/qRead.do")) {
             action = new BoardReadAction("/view/qna_board_view.jsp");
+        } else if (cmd.equals("/qModify.do")) {
+            action = new BoardReadAction("/view/qna_board_modify.jsp");
+        } else if (cmd.equals("/qUpdate.do")) {
+            action = new BoardUpdateAction("/qRead.do");
+        } else if (cmd.equals("/qDelete.do")) {
+            action = new BoardDeleteAction("/qList.do");
+        } else if (cmd.equals("/qReplyView.do")) {
+            action = new BoardReadAction("/view/qna_board_reply.jsp");
+        } else if (cmd.equals("/qReply.do")) {
+            action = new BoardReplyAction("/qList.do");
         }
 
         // 4. 생성된 action 에게 일 시키기(서블릿(~Pro),이 해야했던 일)
