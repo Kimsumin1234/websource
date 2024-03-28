@@ -16,7 +16,9 @@ import action.BoardDeleteAction;
 import action.BoardListAction;
 import action.BoardReadAction;
 import action.BoardReplyAction;
+import action.BoardSearchAction;
 import action.BoardUpdateAction;
+import action.BoardUpdateCountAction;
 import action.BoardWriteAction;
 
 @WebServlet("*.do")
@@ -48,7 +50,15 @@ public class BoardControllerServlet extends HttpServlet {
             action = new BoardReadAction("/view/qna_board_reply.jsp");
         } else if (cmd.equals("/qReply.do")) {
             action = new BoardReplyAction("/qList.do");
+        } else if (cmd.equals("/qCount.do")) {
+            // 조회수 업데이트를 한후 => /qRead.do 진행
+            action = new BoardUpdateCountAction("/qRead.do");
         }
+
+        // 검색은 ListAction 으로 하고 있다
+        // else if (cmd.equals("/qSearch.do")) {
+        // action = new BoardSearchAction("/view/qna_board_list.jsp");
+        // }
 
         // 4. 생성된 action 에게 일 시키기(서블릿(~Pro),이 해야했던 일)
         ActionForward af = null;

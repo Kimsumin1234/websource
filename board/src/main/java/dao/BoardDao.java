@@ -12,6 +12,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import dto.BoardDto;
+import dto.SearchDto;
 
 public class BoardDao {
     // JDBC 단계
@@ -44,15 +45,76 @@ public class BoardDao {
     }
 
     // 3. CRUD
+    // - 전체 게시물 개수 가져오기
+    public int getRows(String criteria, String keyword) {
+        int total = 0;
+        con = getConnection();
+        try {
+            String sql = "";
+            if (criteria.isEmpty()) {
+                sql += "SELECT COUNT(*) FROM BOARDTBL";
+                pstmt = con.prepareStatement(sql);
+            } else {
+                sql += "SELECT COUNT(*) FROM BOARDTBL WHERE " + criteria + " LIKE ?";
+                pstmt = con.prepareStatement(sql);
+                pstmt.setString(1, "%" + keyword + "%");
+            }
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                // 게시물 개수 1칸 만 나와서 while 을 안쓴다
+                total = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(con, pstmt, rs);
+        }
+        return total;
+    }
+
     // - 전체 리스트 가져오기
-    public List<BoardDto> getList() {
+    public List<BoardDto> getList(SearchDto searchDto) {
         List<BoardDto> list = new ArrayList<>();
         con = getConnection();
+        // 페이지 나누기 안할 경우
         // 댓글 작업 (RE_LEV 추가, 정렬기준 추가)
-        String sql = "SELECT BNO ,TITLE ,NAME ,REGDATE ,READ_COUNT ,RE_LEV  FROM BOARDTBL ORDER BY RE_REF DESC ,RE_SEQ ASC";
+        // String sql = "SELECT BNO ,TITLE ,NAME ,REGDATE ,READ_COUNT ,RE_LEV FROM
+        // BOARDTBL ORDER BY RE_REF DESC ,RE_SEQ ASC";
+
+        // start = 페이지번호 * 한 페이지당 게시물 수
+        // end = (페이지번호-1) * 한 페이지당 게시물 수
+        int start = searchDto.getPage() * searchDto.getAmount();
+        int end = (searchDto.getPage() - 1) * searchDto.getAmount();
+
         try {
-            pstmt = con.prepareStatement(sql);
-            rs = pstmt.executeQuery();
+            String sql = "SELECT BNO ,TITLE ,NAME ,REGDATE ,READ_COUNT ,RE_LEV ";
+            sql += "FROM (SELECT rownum AS rnum, A.* ";
+            sql += "FROM (SELECT rownum, BNO ,TITLE ,NAME ,REGDATE ,READ_COUNT ,RE_LEV ";
+            sql += "FROM BOARDTBL b WHERE bno > 0 ";
+
+            if (searchDto.getCriteria().isEmpty()) {
+                // 페이지 나누기 할 경우
+                // 전체 리스트 일시
+                sql += "ORDER BY RE_REF DESC ,RE_SEQ ASC) A ";
+                sql += "WHERE rownum <= ?) WHERE rnum > ?";
+
+                pstmt = con.prepareStatement(sql);
+                pstmt.setInt(1, start);
+                pstmt.setInt(2, end);
+                rs = pstmt.executeQuery();
+            } else {
+                // 검색 리스트 일시
+                sql += "AND " + searchDto.getCriteria() + " LIKE ? ";
+                sql += "ORDER BY RE_REF DESC ,RE_SEQ ASC) A ";
+                sql += "WHERE rownum <= ?) WHERE rnum > ?";
+
+                pstmt = con.prepareStatement(sql);
+                pstmt.setString(1, "%" + searchDto.getKeyword() + "%");
+                pstmt.setInt(2, start);
+                pstmt.setInt(3, end);
+                rs = pstmt.executeQuery();
+            }
             while (rs.next()) {
                 BoardDto dto = new BoardDto();
                 dto.setBno(rs.getInt(1));
@@ -63,6 +125,7 @@ public class BoardDao {
                 dto.setReLev(rs.getInt(6));
                 list.add(dto);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -213,31 +276,49 @@ public class BoardDao {
         return result;
     }
 
+    // - 조회수 업데이트
+    // - BoardReadAction.java 와 연계하게 되면 새로고침마다 조회수가 올라가는 문제가 발생
+    // - 이러한 문제를 해결하기위해서 조회수 업데이트 action 을 따로 만든다
+    public int updateCount(int bno) {
+        int result = 0;
+        try {
+            con = getConnection();
+            String sql = "UPDATE BOARDTBL SET read_count = read_count + 1 WHERE BNO = ?";
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, bno);
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(con, pstmt);
+        }
+
+        return result;
+    }
+
     // - 검색
-    public List<BoardDto> getSearchList(String criteria, String keyword) {
+    // - criteria 조건을 하나의 sql 구문으로 해결하기 위해서 SearchDto 를 만든다
+    // - WHERE 에 = 대신 like 와 % 사용
+    public List<BoardDto> getSearchList(SearchDto searchDto) {
         List<BoardDto> list = new ArrayList<>();
         con = getConnection();
-        String sql = "";
-
-        if (criteria.equals("title")) {
-            sql = "SELECT * FROM BOARDTBL WHERE TITLE =?";
-        } else if (criteria.equals("content")) {
-            sql = "SELECT * FROM BOARDTBL WHERE content =?";
-        } else if (criteria.equals("name")) {
-            sql = "SELECT * FROM BOARDTBL WHERE name =?";
-        }
+        String sql = "SELECT BNO ,TITLE ,NAME ,REGDATE ,READ_COUNT ,RE_LEV ";
+        sql += "FROM BOARDTBL WHERE " + searchDto.getCriteria() + " like ? ";
+        sql += "ORDER BY RE_REF DESC ,RE_SEQ ASC";
 
         try {
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, keyword);
+            pstmt.setString(1, "%" + searchDto.getKeyword() + "%");
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 BoardDto dto = new BoardDto();
-                dto.setBno(rs.getInt("bno"));
-                dto.setTitle(rs.getString("title"));
-                dto.setName(rs.getString("name"));
-                dto.setRegDate(rs.getDate("regDate"));
-                dto.setReadCount(rs.getInt("readCount"));
+                dto.setBno(rs.getInt(1));
+                dto.setTitle(rs.getString(2));
+                dto.setName(rs.getString(3));
+                dto.setRegDate(rs.getDate(4));
+                dto.setReadCount(rs.getInt(5));
+                dto.setReLev(rs.getInt(6));
                 list.add(dto);
             }
 
