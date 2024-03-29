@@ -1,6 +1,7 @@
 package action;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,12 @@ public class BoardWriteAction implements Action {
         String title = req.getParameter("title");
         String content = req.getParameter("content");
         String password = req.getParameter("password");
+
+        // 페이지 나누기 개념 추가 후 들어오는 값들
+        String page = req.getParameter("page");
+        String amount = req.getParameter("amount");
+        String criteria = req.getParameter("criteria");
+        String keyword = URLEncoder.encode(req.getParameter("keyword"), "utf-8");
 
         BoardDto insertDto = new BoardDto();
         insertDto.setName(name);
@@ -56,12 +63,17 @@ public class BoardWriteAction implements Action {
 
         // 결과가 true 면 목록으로, false 면 qna_board_write.jsp
         if (!result) {
-            path = "/view/qna_board_write.jsp";
+            path = "/view/qna_board_write.jsp" + "&page=" + page + "&amount=" + amount + "&criteria=" + criteria
+                    + "&keyword=" + keyword;
+        } else {
+            path += "?page=" + page + "&amount=" + amount + "&criteria=" + criteria
+                    + "&keyword=" + keyword;
         }
 
         return new ActionForward(path, true);
     }
 
+    // 파일 메소드
     private String getFileName(Part part) {
         // Content-Disposition: attachment; filename="filename.jpg" 이런식으로 넘어온다
         String header = part.getHeader("content-disposition");

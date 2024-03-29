@@ -10,23 +10,35 @@
 		<div class="row justify-content-between">				
 			<div class="col-md-4">
 			  <!--1. 글쓰기 버튼-->
-			  <a href="<c:url value="/view/qna_board_write.jsp"/>" class="btn btn-success">새글 작성</a>			
-			</div>				
+			  <%-- 페이지 나누기 설정후 url => # 으로 변경 --%>
+			  <a href="#" class="btn btn-success">새글 작성</a>			
+			</div>	
+			<div class="col-md-3">
+			  <select name="amount" class="form-control">
+			      <option value="10" <c:out value="${pageDto.searchDto.amount == 10?'selected':''}" /> >10</option>
+			      <option value="20" <c:out value="${pageDto.searchDto.amount == 20?'selected':''}" /> >20</option>
+			      <option value="30" <c:out value="${pageDto.searchDto.amount == 30?'selected':''}" /> >30</option>
+			      <option value="40" <c:out value="${pageDto.searchDto.amount == 40?'selected':''}" /> >40</option>
+			  </select>
+			</div>			
 			<div class="col-md-5">
-			  <!--2. 검색 들어갈 부분-->
-			  <form action="<c:url value="/qList.do"/>" method="post" name="search" class="form-inline">
+			  <!--2. 검색 들어갈 부분 -->
+			  <%-- 검색도 페이지 나누기 를 해야하기 때문에 page 와 amount 가 추가로 필요하다 --%>
+			  <form action="<c:url value="/qList.do"/>" method="get" name="search" class="form-inline">
+			    <input type="hidden" name="page" value="${pageDto.searchDto.page}">
+                <input type="hidden" name="amount" value="${pageDto.searchDto.amount}">
 			  <div class="form-group">
 			    <select name="criteria" class="form-control">
 				<%-- 3. 검색 조건 남아있게 하기 --%>
 				<%-- - pageDto.searchDto : PageDto 안에 SearchDto 객체를 searchDto 이걸로 포함하고 있다 --%>
-			      <option value="n" <c:out value="${pageDto.searchDto.criteria == null?'selected':''}"/> >-----</option>
-			      <option value="title" <c:out value="${pageDto.searchDto.criteria == 'title'?'selected':''}"/> >title</option>
-			      <option value="content" <c:out value="${pageDto.searchDto.criteria == 'content'?'selected':''}"/> >content</option>
-			      <option value="name" <c:out value="${pageDto.searchDto.criteria == 'name'?'selected':''}"/> >name</option>
+			      <option value="n" <c:out value="${pageDto.searchDto.criteria == null?'selected':''}" /> >-----</option>
+			      <option value="title" <c:out value="${pageDto.searchDto.criteria == 'title'?'selected':''}" /> >title</option>
+			      <option value="content" <c:out value="${pageDto.searchDto.criteria == 'content'?'selected':''}" /> >content</option>
+			      <option value="name" <c:out value="${pageDto.searchDto.criteria == 'name'?'selected':''}" /> >name</option>
 			    </select>			  
 			  </div>
 			  <div class="form-group">
-			    <input type="text" name="keyword" value="${search.keyword}" id="" class="form-control">			  
+			    <input type="text" name="keyword" value="${pageDto.searchDto.keyword}" id="" class="form-control">			  
 			  </div>
 			  <div class="form-group">
 				<input type="submit" value="검색" class="btn btn-primary">			  
@@ -55,7 +67,8 @@
 				</c:forEach>
 				</c:if>
 				<%-- 5. 조회수 업데이트까지 하고 /qRead.do 실행 --%>
-				    <a href="<c:url value="/qCount.do?bno=${dto.bno}"/>">${dto.title}</a>
+				<%-- 내용보기도 페이지 나누기 개념이 필요해서 주소를 <c:url> 을 안쓰고 ${dto.bno} 값만 보낸다 --%>
+				    <a href="${dto.bno}" class="move">${dto.title}</a>
 				</td>
 				<td class='text-center'>${dto.name}</td><!--작성자-->
 				<td class='text-center'>${dto.regDate}</td><!--날짜-->
@@ -99,7 +112,8 @@
 		<div style="height:20px"></div>
 	</div>	
 </section>
-<form action="" method="get" id="actionForm">
+<%-- 7. 사용자가 누른 페이지 번호 값을 /qList.do 로 보냄 --%>
+<form action="<c:url value="/qList.do"/>" method="get" id="actionForm">
   <input type="hidden" name="page" value="${pageDto.searchDto.page}">
   <input type="hidden" name="amount" value="${pageDto.searchDto.amount}">
   <input type="hidden" name="criteria" value="${pageDto.searchDto.criteria}">

@@ -1,5 +1,7 @@
 package action;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import dto.BoardDto;
@@ -28,13 +30,21 @@ public class BoardUpdateAction implements Action {
         dto.setContent(content);
         dto.setPassword(password);
 
+        // 페이지 나누기 개념 추가 후 들어오는 값들
+        String page = req.getParameter("page");
+        String amount = req.getParameter("amount");
+        String criteria = req.getParameter("criteria");
+        String keyword = URLEncoder.encode(req.getParameter("keyword"), "utf-8");
+
         BoardService service = new BoardServiceImpl();
         boolean result = service.update(dto);
 
         if (!result) {
-            path = "/qModify.do?bno=" + dto.getBno();
+            path = "/qModify.do?bno=" + dto.getBno() + "&page=" + page + "&amount=" + amount + "&criteria=" + criteria
+                    + "&keyword=" + keyword;
         } else {
-            path += "?bno=" + dto.getBno();
+            path += "?bno=" + dto.getBno() + "&page=" + page + "&amount=" + amount + "&criteria=" + criteria
+                    + "&keyword=" + keyword;
         }
 
         return new ActionForward(path, true);

@@ -47,8 +47,20 @@
 				<div style="height:20px"></div>
 			</div>
 			<input type="hidden" name="bno" value="${dto.bno}">
+			<input type="hidden" name="page" value="${searchDto.page}">
+            <input type="hidden" name="amount" value="${searchDto.amount}">
+            <input type="hidden" name="criteria" value="${searchDto.criteria}">
+            <input type="hidden" name="keyword" value="${searchDto.keyword}">
 		</form>
 	</div>
 </section>
+<%-- 수정도 목록 버튼이 실행되기 위한 값들 추가 --%>
+<%-- 위에 있는 input 이랑 동일한걸로 복사 붙여넣기 해준다 --%>
+<form action="<c:url value="/qList.do"/>" method="get" id="actionForm">
+			<input type="hidden" name="page" value="${searchDto.page}">
+            <input type="hidden" name="amount" value="${searchDto.amount}">
+            <input type="hidden" name="criteria" value="${searchDto.criteria}">
+            <input type="hidden" name="keyword" value="${searchDto.keyword}">
+</form>
 <script src="<c:url value="/js/modify.js"/>"></script>
 <%@include file="/include/footer.jsp"%>

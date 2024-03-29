@@ -88,9 +88,22 @@ pageEncoding="UTF-8"%> <%@include file="../include/header.jsp"%>
         </div>
         <div style="height:20px"></div>
       </div>
+      <%-- setAttribute() 방식으로 보낸게 아니라서 getParameter() 로 사용 --%>
+      <input type="hidden" name="bno" value="<%=request.getParameter("bno")%>">
+			<input type="hidden" name="page" value="<%=request.getParameter("page")%>">
+			<input type="hidden" name="amount" value="<%=request.getParameter("amount")%>">
+			<input type="hidden" name="criteria" value="<%=request.getParameter("criteria")%>">
+			<input type="hidden" name="keyword" value="<%=request.getParameter("keyword")%>">
     </form>
   </div>
   <!-- /.box -->
 </section>
+<%-- 새글작성도 목록보기 버튼이 실행되기 위한 값들 추가 --%>
+<form action="<c:url value="/qList.do"/>" method="get" id="actionForm">
+			<input type="hidden" name="page" value="<%=request.getParameter("page")%>">
+			<input type="hidden" name="amount" value="<%=request.getParameter("amount")%>">
+			<input type="hidden" name="criteria" value="<%=request.getParameter("criteria")%>">
+			<input type="hidden" name="keyword" value="<%=request.getParameter("keyword")%>">
+</form>
 <script src="<c:url value="/js/write.js"/>"></script>
 <%@include file="../include/footer.jsp"%>
